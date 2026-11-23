@@ -162,6 +162,59 @@ textarea{width:100%;min-height:90px;border-radius:14px;border:1.5px solid var(--
 @keyframes spOut{to{opacity:0;visibility:hidden}}
 @media (prefers-reduced-motion:reduce){#splash{display:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ============ layout responsivo: tablet e desktop ============ */
+.nav .nbrand,.nav .nadd{display:none}
+.split>div{min-width:0}
+@media (min-width:768px){
+ .app{max-width:960px;padding:26px 28px 150px}
+ .top h1{font-size:28px}
+ .mnav{max-width:420px}
+ .cols{column-count:2;column-gap:16px}
+ .cols>*{break-inside:avoid;page-break-inside:avoid}
+ .split{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+ .tgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;align-items:start}
+ .tgrid>*{margin-bottom:0!important}
+ .tgrid>.acc{height:100%}
+ .rgrid{display:grid;grid-template-columns:1fr 1fr;column-gap:28px}
+ .rgrid>.row:nth-child(2){border-top:0}
+ .hero.hx{display:grid;grid-template-columns:minmax(240px,1fr) 1.5fr;gap:28px;align-items:center;padding:24px 28px 20px 62px}
+ .hero.hx .hrow{margin-bottom:0}
+ .hero .big{font-size:42px}
+ .nav{width:min(calc(100% - 48px),560px)}
+ .fabw{width:min(100%,960px);padding:0 28px}
+ .panel{top:50%;bottom:auto;transform:translate(-50%,-50%);width:min(calc(100% - 48px),540px);max-height:86vh;border-radius:28px;padding:20px 24px 24px;box-shadow:0 24px 64px rgba(0,0,0,.3);animation:pop2 .2s ease-out}
+ .panel .grab{display:none}
+ .ob{max-width:460px}
+}
+@keyframes pop2{from{transform:translate(-50%,-46%);opacity:.4}}
+@media (min-width:1100px){
+ .app{max-width:1160px;margin:0 0 0 calc(248px + max(0px,(100vw - 1408px)/2));padding:32px 40px 56px}
+ .top{margin-bottom:18px}
+ .top h1{font-size:32px}
+ .back h1{font-size:28px}
+ .hero .big{font-size:46px}
+ .grid4{grid-template-columns:repeat(4,1fr);gap:16px}
+ .cols{column-gap:20px}
+ .split,.tgrid{gap:20px}
+ .nav{top:0;bottom:0;left:0;transform:none;width:248px;flex-direction:column;gap:4px;border:0;border-right:1px solid var(--line);border-radius:0;padding:26px 16px;box-shadow:none;overflow-y:auto}
+ .nav .nbrand{display:flex;align-items:center;gap:10px;padding:0 8px 24px;font:800 22px 'Manrope',sans-serif;letter-spacing:-.03em}
+ .nav .nadd{display:inline-flex;margin-bottom:18px;flex:none;color:var(--onbrand);font-size:15px;padding:0 18px;border-radius:16px;justify-content:center;flex-direction:row;gap:8px}
+ .nav .nadd svg{width:20px;height:20px}
+ .nav button:not(.nadd){flex:none;flex-direction:row;justify-content:flex-start;gap:12px;padding:12px 14px;border-radius:14px;font-size:15px}
+ .fabw{display:none}
+ .toast{left:calc(50% + 124px);bottom:32px}
+}
+@media (min-width:1280px){
+ .tgrid.t3{grid-template-columns:repeat(3,1fr)}
+}
+@media (hover:hover) and (min-width:768px){
+ .nav button:not(.on):not(.nadd):hover{background:var(--s2);color:var(--ink)}
+ button.row:hover,button.gt:hover{filter:brightness(.98)}
+ button.gt{transition:transform .15s}button.gt:hover{transform:translateY(-2px)}
+ button.acc{transition:transform .15s}button.acc:hover{transform:translateY(-2px)}
+ .cal button:not(.e):not(.sel):hover{outline:2px solid var(--line)}
+}
 </style>
 </head>
 <body>
@@ -356,7 +409,7 @@ function heroBlock(ym,label){
  const now=totalAt(cut,false),fore=totalAt(mE,mE>=T);
  const n=dim(ym),vals=[];let ti=-1;
  for(let d=1;d<=n;d++){const ds=`${ym}-${pad(d)}`;vals.push(ds<=T?totalAt(ds,false):totalAt(ds,true));if(ds<=T)ti=d-1}
- return `<section class="hero"><small>${label}</small><div class="big num">${fmt(now)}</div><div class="hrow"><div><small>Início do mês</small><b class="num">${fmt(start)}</b></div><div><small>Previsto no fim</small><b class="num">${fmt(fore)}</b></div></div>${chartSvg(vals,ti)}<div class="axis"><span>1</span><span>8</span><span>15</span><span>23</span><span>${n}</span></div></section>`;
+ return `<section class="hero hx"><div class="hl"><small>${label}</small><div class="big num">${fmt(now)}</div><div class="hrow"><div><small>Início do mês</small><b class="num">${fmt(start)}</b></div><div><small>Previsto no fim</small><b class="num">${fmt(fore)}</b></div></div></div><div class="hc">${chartSvg(vals,ti)}<div class="axis"><span>1</span><span>8</span><span>15</span><span>23</span><span>${n}</span></div></div></section>`;
 }
 
 /* ============ telas ============ */
@@ -366,6 +419,7 @@ function vHome(){
  let out=`<div class="top"><div><small>${greet}</small><h1>${esc(S.profile.name||'Olá')}</h1></div><button data-a="nav" data-id="more" aria-label="Perfil">${avatar()}</button></div>${monthNav()}${heroBlock(ym,'Saldo atual')}`;
  if(!S.accounts.length)out+=`<div class="card">${emptyBox('🏦','Crie sua primeira conta para começar a lançar.',`<button class="btn sm" data-a="acc-new">Criar conta</button>`)}</div>`;
  const mt=monthTx(ym);
+ out+='<div class="cols">';
  if(h.summary){
   const inc=mt.filter(t=>t.type==='inc').reduce((s,t)=>s+t.amount,0),exp=mt.filter(t=>t.type==='exp').reduce((s,t)=>s+t.amount,0),mx=Math.max(inc,exp,1);
   out+=`<div class="card"><div class="ch"><h3>Resumo do mês</h3></div>${mt.length?`<div class="pair" style="margin-bottom:12px"><div class="tile"><small>Receitas</small><b class="inc num">${fmt(inc)}</b></div><div class="tile"><small>Despesas</small><b class="exp num">${fmt(exp)}</b></div></div><div class="bar" style="margin-bottom:6px"><i style="width:${inc/mx*100}%;background:var(--inc)"></i></div><div class="bar"><i style="width:${exp/mx*100}%;background:var(--exp)"></i></div><p style="margin:12px 0 0">Sobrou <b class="num ${inc-exp>=0?'inc':'exp'}">${fmt(inc-exp)}</b> neste mês, contando compras no cartão.</p>`:emptyBox('✍️','Adicione receitas e despesas para acompanhar o mês.')}</div>`;
@@ -388,6 +442,7 @@ function vHome(){
   const rec=[...S.tx].sort((a,b)=>a.date===b.date?0:a.date<b.date?1:-1).slice(0,6);
   out+=`<div class="card"><div class="ch"><h3>Últimos lançamentos</h3></div>${rec.length?rec.map(txRow).join(''):emptyBox('🧾','Seus lançamentos recentes aparecem aqui.')}</div>`;
  }
+ out+='</div>';
  out+=`<div style="display:flex;justify-content:center;align-items:center;width:100%;margin:6px 0 4px;text-align:center"><button class="lnk" style="display:inline-flex;gap:8px;align-items:center;justify-content:center;text-align:center;white-space:nowrap;padding:10px 16px" data-a="home-custom">${ic('sliders')}<span>Personalizar tela inicial</span></button></div>`;
  return out;
 }
@@ -400,7 +455,7 @@ function vAccounts(){
  const sum=k=>st.reduce((s,x)=>s+x[k],0);
  return `<div class="top"><h1>Contas</h1><button class="btn sm" data-a="acc-new" style="gap:4px">${ic('plus')}<span>Adicionar</span></button></div>${monthNav()}
  <section class="hero"><small>Saldo total em contas</small><div class="big num">${fmt(sum('end'))}</div><div class="hrow"><div><small>Início do mês</small><b class="num">${fmt(sum('start'))}</b></div><div><small>Receitas</small><b class="num">${fmt(sum('inc'))}</b></div></div><div class="hrow" style="margin:0"><div><small>Despesas</small><b class="num">${fmt(sum('exp'))}</b></div><div><small>Rendimentos</small><b class="num">${fmt(sum('ren'))}</b></div></div></section>
- ${S.accounts.length?S.accounts.map(a=>accCard(a,ym)).join(''):`<div class="card">${emptyBox('🏦','Você ainda não tem contas. Cadastre onde seu dinheiro fica: banco, carteira, poupança.',`<button class="btn sm" data-a="acc-new">Criar primeira conta</button>`)}</div>`}`;
+ ${S.accounts.length?`<div class="tgrid">${S.accounts.map(a=>accCard(a,ym)).join('')}</div>`:`<div class="card">${emptyBox('🏦','Você ainda não tem contas. Cadastre onde seu dinheiro fica: banco, carteira, poupança.',`<button class="btn sm" data-a="acc-new">Criar primeira conta</button>`)}</div>`}`;
 }
 function vCards(){
  const ym=ui.ym;
@@ -411,22 +466,23 @@ function vCards(){
  const allTotal=S.cards.reduce((s,x)=>s+Math.max(0,invTotal(x,ym)),0),allAvail=S.cards.reduce((s,x)=>s+(x.limit-cardUsed(x)),0);
  if(S.cards.length>1)out+=`<div class="chips" style="margin-bottom:14px">${S.cards.map(x=>`<button class="chip ${x.id===c.id?'on':''}" data-a="card-sel" data-id="${x.id}">${esc(x.name)}</button>`).join('')}</div>`;
  const badge=total<=0?'':paid?'<span class="badge ok">Paga</span>':due<T?'<span class="badge bad">Vencida</span>':'<span class="badge">Aberta</span>';
+ out+='<div class="split"><div>';
  out+=`<button class="acc" style="--c:${c.color}" data-a="card-edit" data-id="${c.id}"><div class="ah"><div class="ini">💳</div><div><b>${esc(c.name)}</b><small>Fecha dia ${c.closeDay}, vence dia ${c.dueDay}</small></div><span class="ic">${ic('dots')}</span></div><small>Fatura de ${monthOnly(ym)} ${badge}</small><div class="big num">${fmt(Math.max(0,total))}</div><div class="g2"><div><small>Vencimento</small><b>${dayLabel(due)}</b></div><div><small>Limite disponível</small><b class="num">${fmt(c.limit-used)}</b></div></div></button>`;
  out+=`<div class="btns" style="margin:-4px 0 14px">${total>0&&!paid?`<button class="btn acc" data-a="payinv" data-id="${c.id}" data-ym="${ym}">Pagar fatura</button>`:''}${paid?`<button class="btn ghost" data-a="unpay" data-id="${c.id}" data-ym="${ym}">Desfazer pagamento</button>`:''}<button class="btn ghost" data-a="add-tx" data-card="${c.id}">Nova compra</button></div>`;
  out+=`<div class="pair" style="margin-bottom:14px"><div class="tile"><small>Total em faturas</small><b class="num">${fmt(allTotal)}</b></div><div class="tile"><small>Limite disponível</small><b class="num">${fmt(allAvail)}</b></div></div>`;
  const items=invItems(c,ym).sort((a,b)=>a.date<b.date?1:-1);
- out+=`<div class="card"><div class="ch"><h3>Gastos por categoria</h3></div>${catBlock(items,'As categorias aparecem quando houver compras nesta fatura.')}</div><div class="card"><div class="ch"><h3>Registros da fatura</h3><span class="mut">${items.length} ${items.length===1?'item':'itens'}</span></div>${items.length?items.map(txRow).join(''):emptyBox('🧾','Nenhuma compra neste mês. Compras, estornos e parcelas aparecem aqui.')}</div>`;
+ out+=`<div class="card"><div class="ch"><h3>Gastos por categoria</h3></div>${catBlock(items,'As categorias aparecem quando houver compras nesta fatura.')}</div></div><div><div class="card"><div class="ch"><h3>Registros da fatura</h3><span class="mut">${items.length} ${items.length===1?'item':'itens'}</span></div>${items.length?items.map(txRow).join(''):emptyBox('🧾','Nenhuma compra neste mês. Compras, estornos e parcelas aparecem aqui.')}</div></div></div>`;
  return out;
 }
 function vGoals(){
  const T=todayStr();
  let out=`<div class="top"><h1>Metas</h1>${S.goals.length?`<button class="btn sm" data-a="goal-new" style="gap:4px">${ic('plus')}<span>Nova meta</span></button>`:''}</div>`;
  if(!S.goals.length)return out+`<div class="card">${emptyBox('🎯','<b style="color:var(--ink);font-size:18px">Transforme planos em metas</b><br>Defina quanto quer juntar e até quando. O MyAdmin calcula quanto guardar por mês.',`<button class="btn" data-a="goal-new">Criar primeira meta</button>`)}</div>`;
- return out+S.goals.map(g=>{
+ return out+'<div class="tgrid t3">'+S.goals.map(g=>{
   const saved=g.deposits.reduce((s,d)=>s+d.amount,0),pct=Math.min(100,saved/g.target*100),done=saved>=g.target,rem=Math.max(0,g.target-saved);
   const months=Math.max(1,diffM(ymOf(T),ymOf(g.deadline))),late=g.deadline<T&&!done,acc=accOf(g.accountId);
   return `<div class="card"><div class="ch"><h3>${esc(g.name)}</h3>${done?'<span class="badge ok">Concluída</span>':late?'<span class="badge bad">Prazo vencido</span>':''}</div><div style="display:flex;justify-content:space-between;margin-bottom:8px"><b class="num" style="font-size:22px">${fmt(saved)}</b><span class="mut num" style="align-self:end">de ${fmt(g.target)}</span></div><div class="prog ${done?'done':''}"><i style="width:${pct}%"></i></div><p class="mut" style="margin:10px 0 0;font-size:13.5px">${done?'Meta alcançada. Parabéns!':`Faltam ${fmt(rem)}${late?'':`. Guardando ${fmt(rem/months)} por mês você chega em ${dayLabel(g.deadline)} de ${g.deadline.slice(0,4)}`}.`}${acc?` Conta: ${esc(acc.name)}.`:''}</p><div class="btns"><button class="btn ghost sm" data-a="goal-edit" data-id="${g.id}" style="flex:1">Editar</button><button class="btn sm" data-a="goal-dep" data-id="${g.id}" style="flex:1">Guardar valor</button></div></div>`;
- }).join('');
+ }).join('')+'</div>';
 }
 function longestStreak(){
  const ds=[...new Set(S.tx.map(t=>t.date))].sort();let best=0,cur=0,prev=null;
@@ -513,7 +569,7 @@ function vMore(){
  return `<div class="top"><h1>Mais</h1></div>
  <button class="hero" style="width:100%;display:block;padding-bottom:20px" data-a="profile"><div style="display:flex;gap:14px;align-items:center">${avatar()}<div style="flex:1"><div class="disp" style="font-size:22px;font-weight:800">${esc(S.profile.name||'Seu nome')}</div><small>Toque para editar nome e foto</small></div></div></button>
  <div class="grid4"><button class="gt" data-a="sub" data-id="calendar"><span class="em">📅</span><b>Calendário</b><small>Receitas e despesas por dia</small></button><button class="gt" data-a="sub" data-id="planning"><span class="em">🧭</span><b>Planejamento</b><small>Limites de gasto do mês</small></button><button class="gt" data-a="sub" data-id="quotes"><span class="em">💱</span><b>Cotações</b><small>Câmbio e conversor</small></button><button class="gt" data-a="sub" data-id="save"><span class="em">💡</span><b>Economizar</b><small>Oportunidades nos seus gastos</small></button></div>
- <div class="card"><div class="ch"><h3>Sua jornada</h3></div>${r('🏆','Conquistas',`${b} de ${badges().length} desbloqueadas`,'sub','achieve')}</div>
+ <div class="cols"><div class="card"><div class="ch"><h3>Sua jornada</h3></div>${r('🏆','Conquistas',`${b} de ${badges().length} desbloqueadas`,'sub','achieve')}</div>
  <div class="card"><div class="ch"><h3>Preferências</h3></div>${r('🏷️','Categorias','Ver e criar categorias','sub','cats')}${r('🎨','Tema',themeN,'pick-theme')}${r('💲','Moeda',S.currency,'pick-cur')}</div>
  <div class="card"><div class="ch"><h3>Seus dados</h3></div>${r('💾','Backup e restauração','Exporte ou importe um arquivo','backup')}${r('🧹','Começar do zero','Apagar lançamentos, contas, cartões e metas','reset-fin')}${r('🗑️','Apagar tudo','Remove também perfil e preferências','reset-all')}</div>
  <div class="card"><div class="ch"><h3>Sobre o MyAdmin</h3></div><p class="mut" style="margin:0 0 14px">Sem cadastro e sem servidor: tudo que você registra fica salvo somente neste aparelho. Faça backups de vez em quando.</p>
@@ -521,7 +577,7 @@ function vMore(){
  <a class="btn ghost" href="mailto:lucas.contatopessoal.1504@gmail.com?subject=Feedback%20MyAdmin" style="margin-bottom:6px">${ico('mail')}<span>Enviar feedback</span></a>
  <p class="mut num" style="margin:0 0 16px;font-size:12.5px;text-align:center;word-break:break-all">lucas.contatopessoal.1504@gmail.com</p>
  <div class="tile"><small>Gostou? Apoie com uma doação via Pix (chave aleatória)</small><b class="pix" id="pixKey">3d198a68-38d3-4899-8a86-f03da4111309</b></div>
- <button class="btn" data-a="copy-pix" style="margin-top:10px">${ico('heart')}<span>Copiar chave Pix</span></button></div>`;
+ <button class="btn" data-a="copy-pix" style="margin-top:10px">${ico('heart')}<span>Copiar chave Pix</span></button></div></div>`;
 }
 
 /* ---------- subpáginas ---------- */
@@ -536,17 +592,17 @@ function sCalendar(){
  }
  const list=S.tx.filter(t=>t.date===ui.calDay);
  const i=list.filter(t=>t.type==='inc').reduce((s,t)=>s+t.amount,0),e=list.filter(t=>t.type==='exp'&&!t.invoicePay).reduce((s,t)=>s+t.amount,0);
- return subWrap('Calendário',monthNav()+`<div class="card"><div class="cal">${cells}</div></div><div class="card"><div class="ch"><h3>${dayLong(ui.calDay)}</h3></div><div class="pair" style="margin-bottom:8px"><div class="tile"><small>Receitas</small><b class="inc num">${fmt(i)}</b></div><div class="tile"><small>Despesas</small><b class="exp num">${fmt(e)}</b></div></div>${list.length?list.map(txRow).join(''):'<p class="mut">Sem lançamentos neste dia.</p>'}<div class="btns"><button class="btn" data-a="add-tx" data-date="${ui.calDay}">Lançar neste dia</button></div></div>`);
+ return subWrap('Calendário',monthNav()+`<div class="split"><div><div class="card"><div class="cal">${cells}</div></div></div><div><div class="card"><div class="ch"><h3>${dayLong(ui.calDay)}</h3></div><div class="pair" style="margin-bottom:8px"><div class="tile"><small>Receitas</small><b class="inc num">${fmt(i)}</b></div><div class="tile"><small>Despesas</small><b class="exp num">${fmt(e)}</b></div></div>${list.length?list.map(txRow).join(''):'<p class="mut">Sem lançamentos neste dia.</p>'}<div class="btns"><button class="btn" data-a="add-tx" data-date="${ui.calDay}">Lançar neste dia</button></div></div></div></div>`);
 }
 function sPlanning(){
  const ym=ui.ym,mt=monthTx(ym),spent=byCat(mt),sp=id=>(spent.find(x=>x.id===id)||{v:0}).v;
  const cats=S.cats.filter(c=>c.t==='exp'),tb=cats.reduce((s,c)=>s+(S.budgets[c.id]||0),0),ts=cats.reduce((s,c)=>s+(S.budgets[c.id]?sp(c.id):0),0);
- return subWrap('Planejamento',monthNav()+`<div class="card"><div class="ch"><h3>Limite total</h3></div>${tb?`<b class="num" style="font-size:22px">${fmt(ts)}</b> <span class="mut num">de ${fmt(tb)}</span><div class="prog" style="margin-top:8px"><i style="width:${Math.min(100,ts/tb*100)}%;background:${ts>tb?'var(--exp)':'var(--acc)'}"></i></div>`:'<p class="mut" style="margin:0">Defina limites por categoria. Eles valem para todos os meses.</p>'}</div><div class="card">${cats.map(c=>{const b=S.budgets[c.id]||0,s=sp(c.id);return `<button class="row" data-a="budget" data-id="${c.id}"><span class="em">${c.e}</span><span class="t"><b>${esc(c.n)}</b><small class="num">${b?`${fmt(s)} de ${fmt(b)}`:s?`${fmt(s)}, sem limite`:'Sem limite'}</small>${b?`<div class="prog" style="height:8px;margin-top:6px"><i style="width:${Math.min(100,s/b*100)}%;background:${s>b?'var(--exp)':'var(--acc)'}"></i></div>`:''}</span>${ic('right')}</button>`}).join('')}</div>`);
+ return subWrap('Planejamento',monthNav()+`<div class="card"><div class="ch"><h3>Limite total</h3></div>${tb?`<b class="num" style="font-size:22px">${fmt(ts)}</b> <span class="mut num">de ${fmt(tb)}</span><div class="prog" style="margin-top:8px"><i style="width:${Math.min(100,ts/tb*100)}%;background:${ts>tb?'var(--exp)':'var(--acc)'}"></i></div>`:'<p class="mut" style="margin:0">Defina limites por categoria. Eles valem para todos os meses.</p>'}</div><div class="card"><div class="rgrid">${cats.map(c=>{const b=S.budgets[c.id]||0,s=sp(c.id);return `<button class="row" data-a="budget" data-id="${c.id}"><span class="em">${c.e}</span><span class="t"><b>${esc(c.n)}</b><small class="num">${b?`${fmt(s)} de ${fmt(b)}`:s?`${fmt(s)}, sem limite`:'Sem limite'}</small>${b?`<div class="prog" style="height:8px;margin-top:6px"><i style="width:${Math.min(100,s/b*100)}%;background:${s>b?'var(--exp)':'var(--acc)'}"></i></div>`:''}</span>${ic('right')}</button>`}).join('')}</div></div>`);
 }
 const RATE_LBL={USD:'Dólar',EUR:'Euro',GBP:'Libra',BTC:'Bitcoin'};
 function sQuotes(){
  const r=S.rates;
- return subWrap('Cotações',`<div class="card"><div class="ch"><h3>Em reais</h3><button class="lnk" data-a="rates">Atualizar</button></div>${r?Object.entries(r.r).map(([k,o])=>`<div class="row"><span class="t"><b>${RATE_LBL[k]||k}</b><small>${k}</small></span><span class="num"><b>${new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(o.v)}</b><br><small class="${o.p>=0?'inc':'exp'}">${o.p>=0?'+':''}${o.p.toFixed(2)}%</small></span></div>`).join('')+`<p class="mut" style="font-size:12.5px;margin:8px 0 0">Atualizado em ${new Date(r.at).toLocaleString('pt-BR')}</p>`:emptyBox('💱','Toque em Atualizar para buscar as cotações. É a única função que usa a internet.')}${ratesErr?'<p class="exp" style="margin:8px 0 0">Não foi possível atualizar agora. Mostrando o último valor salvo.</p>':''}</div>${r?`<div class="card"><div class="ch"><h3>Conversor</h3></div><label class="f"><span>Valor</span><input id="cvAmt" inputmode="decimal" value="1"></label><label class="f"><span>Moeda</span><select id="cvCur">${Object.keys(r.r).map(k=>`<option value="${k}">${RATE_LBL[k]||k} (${k})</option>`).join('')}</select></label><div class="tile"><small>Equivale a</small><b id="cvOut" class="num" style="font-size:22px"></b></div></div>`:''}`);
+ return subWrap('Cotações',`<div class="split"><div><div class="card"><div class="ch"><h3>Em reais</h3><button class="lnk" data-a="rates">Atualizar</button></div>${r?Object.entries(r.r).map(([k,o])=>`<div class="row"><span class="t"><b>${RATE_LBL[k]||k}</b><small>${k}</small></span><span class="num"><b>${new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(o.v)}</b><br><small class="${o.p>=0?'inc':'exp'}">${o.p>=0?'+':''}${o.p.toFixed(2)}%</small></span></div>`).join('')+`<p class="mut" style="font-size:12.5px;margin:8px 0 0">Atualizado em ${new Date(r.at).toLocaleString('pt-BR')}</p>`:emptyBox('💱','Toque em Atualizar para buscar as cotações. É a única função que usa a internet.')}${ratesErr?'<p class="exp" style="margin:8px 0 0">Não foi possível atualizar agora. Mostrando o último valor salvo.</p>':''}</div></div>${r?`<div><div class="card"><div class="ch"><h3>Conversor</h3></div><label class="f"><span>Valor</span><input id="cvAmt" inputmode="decimal" value="1"></label><label class="f"><span>Moeda</span><select id="cvCur">${Object.keys(r.r).map(k=>`<option value="${k}">${RATE_LBL[k]||k} (${k})</option>`).join('')}</select></label><div class="tile"><small>Equivale a</small><b id="cvOut" class="num" style="font-size:22px"></b></div></div></div>`:''}</div>`);
 }
 function updateConv(){
  const a=$('#cvAmt'),c=$('#cvCur'),o=$('#cvOut');if(!a||!S.rates||!o)return;
@@ -564,29 +620,30 @@ function sSave(){
  if(ass>0)tips.push(['🔁',`Assinaturas somam ${fmt(ass)} no mês, ${fmt(ass*12)} no ano. Vale cancelar o que você não usa.`]);
  Object.keys(S.budgets).forEach(id=>{const c=catOf(id),s=(cs.find(x=>x.id===id)||{v:0}).v;if(c&&s>S.budgets[id])tips.push(['🚨',`${c.n} passou do limite em ${fmt(s-S.budgets[id])}.`])});
  openInvoices().filter(i=>i.due<todayStr()).forEach(i=>tips.push(['💳',`A fatura ${i.card.name} de ${fmt(i.total)} está vencida. Juros do rotativo costumam ser os mais caros que existem.`]));
- return subWrap('Economizar',monthNav()+(tips.length?tips.map(t=>`<div class="card" style="display:flex;gap:12px"><span class="em">${t[0]}</span><p style="margin:0">${esc(t[1])}</p></div>`).join(''):`<div class="card">${emptyBox('💡','Registre receitas e despesas deste mês para ver onde dá para economizar.')}</div>`));
+ return subWrap('Economizar',monthNav()+(tips.length?'<div class="tgrid">'+tips.map(t=>`<div class="card" style="display:flex;gap:12px"><span class="em">${t[0]}</span><p style="margin:0">${esc(t[1])}</p></div>`).join('')+'</div>':`<div class="card">${emptyBox('💡','Registre receitas e despesas deste mês para ver onde dá para economizar.')}</div>`));
 }
 function sAchieve(){
  const all=badges(),got=all.filter(b=>b.v>=b.t).length,groups=[...new Set(all.map(b=>b.g))];
  let out=`<div class="card"><div class="ch"><h3>${got} de ${all.length} desbloqueadas</h3><span class="mut num">${Math.round(got/all.length*100)}%</span></div><div class="prog"><i style="width:${got/all.length*100}%"></i></div></div>`;
  groups.forEach(g=>{
   const l=all.filter(b=>b.g===g);
-  out+=`<div class="ch" style="margin:20px 4px 10px"><h3>${g}</h3><span class="mut num">${l.filter(b=>b.v>=b.t).length}/${l.length}</span></div>`+l.map(b=>{
+  out+=`<div class="ch" style="margin:20px 4px 10px"><h3>${g}</h3><span class="mut num">${l.filter(b=>b.v>=b.t).length}/${l.length}</span></div><div class="tgrid t3">`+l.map(b=>{
    const ok=b.v>=b.t,pc=Math.min(100,b.v/b.t*100),lab=b.m?Math.floor(pc)+'%':Math.min(b.v,b.t)+'/'+b.t;
    return `<div class="card" style="display:flex;gap:12px;align-items:center;padding:14px;margin-bottom:10px;${ok?'':'opacity:.78'}"><span class="em" style="${ok?'background:linear-gradient(135deg,#E6CD93,#B8924A);color:#1A1405':''}">${ok?b.e:'🔒'}</span><div style="flex:1;min-width:0"><b>${b.n}</b><div class="mut" style="font-size:13px">${b.d}</div><div class="prog ${ok?'done':''}" style="height:8px;margin-top:6px"><i style="width:${pc}%"></i></div></div><b class="num" style="font-size:13px">${lab}</b></div>`;
-  }).join('');
+  }).join('')+'</div>';
  });
  return subWrap('Conquistas',out);
 }
 function sCats(){
  const blk=(t,l)=>`<div class="card"><div class="ch"><h3>${l}</h3></div>${S.cats.filter(c=>c.t===t).map(c=>`<div class="row"><span class="em">${c.e}</span><span class="t"><b>${esc(c.n)}</b>${c.custom?'<small>Personalizada</small>':''}</span>${c.custom?`<button class="ib" data-a="cat-del" data-id="${c.id}" aria-label="Excluir ${esc(c.n)}">${ic('x')}</button>`:''}</div>`).join('')}</div>`;
- return subWrap('Categorias',`<button class="btn" data-a="cat-new" style="margin-bottom:14px">Nova categoria</button>`+blk('exp','Despesas')+blk('inc','Receitas'));
+ return subWrap('Categorias',`<button class="btn" data-a="cat-new" style="margin-bottom:14px;max-width:420px">Nova categoria</button><div class="split"><div>`+blk('exp','Despesas')+'</div><div>'+blk('inc','Receitas')+'</div></div>');
 }
 function subPage(){return ({calendar:sCalendar,planning:sPlanning,quotes:sQuotes,save:sSave,achieve:sAchieve,cats:sCats})[ui.sub]()}
 
 function nav(){
  const it=[['home','Início','home'],['accounts','Contas','wallet'],['cards','Cartões','card'],['goals','Metas','flag'],['more','Mais','more']];
- return `<nav class="nav" aria-label="Principal">${it.map(([k,l,i])=>`<button class="${ui.tab===k&&!ui.sub?'on':''}" data-a="nav" data-id="${k}" ${ui.tab===k?'aria-current="page"':''}>${ic(i)}<span>${l}</span></button>`).join('')}</nav><div class="fabw"><button class="fab" data-a="add-tx" ${ui.tab==='cards'&&ui.cardId?`data-card="${ui.cardId}"`:''} aria-label="Novo lançamento">${ic('plus')}</button></div>`;
+ const card=ui.tab==='cards'&&ui.cardId?`data-card="${ui.cardId}"`:'';
+ return `<nav class="nav" aria-label="Principal"><div class="nbrand">${logoSvg(36)}<span>MyAdmin</span></div><button class="btn nadd" data-a="add-tx" ${card}>${ic('plus')}<span>Novo lançamento</span></button>${it.map(([k,l,i])=>`<button class="${ui.tab===k&&!ui.sub?'on':''}" data-a="nav" data-id="${k}" ${ui.tab===k?'aria-current="page"':''}>${ic(i)}<span>${l}</span></button>`).join('')}</nav><div class="fabw"><button class="fab" data-a="add-tx" ${ui.tab==='cards'&&ui.cardId?`data-card="${ui.cardId}"`:''} aria-label="Novo lançamento">${ic('plus')}</button></div>`;
 }
 function onboarding(){
  return `<main class="ob"><div class="logo">${logoSvg(60)}<b>MyAdmin</b></div><h1>Seu dinheiro, organizado no seu aparelho.</h1><p class="mut" style="margin:0">Sem cadastro, sem senha, sem servidor. Diga como quer ser chamado e comece.</p>
